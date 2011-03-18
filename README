@@ -1,0 +1,42 @@
+
+= Pingback
+
+This library enables the user to write pingback aware applications.
+It consists of two components, the client and the server.
+The specs of pingback are available at http://hixie.ch/specs/pingback/pingback-1.0
+
+== Client
+The client provides the methods for sending pingback requests.
+
+== Server
+The server is a simple Rack application, which should be used to receive pingback requests.
+Notice that this class does not know how to handle a pingback request, this is application specific.
+Therefore a proc in which the request is handled has to be provided.
+This design was chosen to enable the users of this library a maximum of flexibility.
+The pingback specification suggest some steps on how to process a request.
+Personally I dont think that its a good idea to allow some strangers to request some URIs from my server.
+
+= Installation
+
+  gem install pingback
+
+= Usage
+
+== sending pingback requests
+
+  source_uri = "http://myblog.com/articles/2"
+  target_uri = "http://someblog.com/articles/16"
+
+  Pingback::Client.send(source_uri, target_uri)
+
+== receiving pingback requests
+
+Notice that this class does not know how to handle a pingback request, it simply provides
+the general set-up. Therefore a proc in which the request is handled has to be provided.
+
+  Pingback::Server.new(Proc.new { |source_uri, target_uri|
+    raise GenericFaultException unless Linkback.create(source_uri, target_uri)
+  })
+
+== marking a resource as pingback-enabled
+To mark a resource as pingback-enabled the header must contain the URI of the pingback-server in the field "X-Pingback".
