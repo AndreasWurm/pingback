@@ -23,7 +23,7 @@ module Pingback
 
         xml_response = @xmlrpc_handler.process(request.body)
 
-        [200, {'Content-Type' => 'text/xml'}, xml_response]
+        [200, {'Content-Type' => 'text/xml'}, [xml_response]]
     end
 
     private
