@@ -4,8 +4,6 @@ Bundler.setup(:default, :development)
 require 'webmock/rspec'
 require 'pretty-xml'
 
-
-
 module TestHelpers
 
   def pingback_request_xml

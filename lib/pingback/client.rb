@@ -13,7 +13,7 @@ module Pingback
     # @raise [Pingback::InvalidTargetException] raised if the target is not a pingback-enabled resource
     # @raise [XMLRPC::FaultException] raised if the server responds with a faultcode
     # @return [String] message indicating that the request was successful
-    def send(source_uri, target_uri)
+    def ping(source_uri, target_uri)
       header = request_header target_uri
       pingback_server = header['X-Pingback']
 

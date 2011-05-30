@@ -16,7 +16,7 @@ describe Pingback::Client do
     stub_request(:head, @target).to_return(pingback_in_header)
     stub_request(:post, @server).to_return(successful_response)
 
-    @client.send(@source, @target)
+    @client.ping(@source, @target)
 
     a_request(:head, @target).should have_been_made
     a_request(:post, @server).should have_been_made
@@ -27,7 +27,7 @@ describe Pingback::Client do
     stub_request(:get, @target).to_return(pingback_in_body)
     stub_request(:post, @server).to_return(successful_response)
 
-    @client.send(@source, @target)
+    @client.ping(@source, @target)
 
     a_request(:head, @target).should have_been_made
     a_request(:get, @target).should have_been_made
@@ -42,7 +42,7 @@ describe Pingback::Client do
     stub_request(:get, @target).to_return(pingback_in_body(escaped_server_uri))
     stub_request(:post, server_uri).to_return(successful_response)
 
-    @client.send(@source, @target)
+    @client.ping(@source, @target)
 
     a_request(:post, server_uri).should have_been_made
   end
@@ -52,7 +52,7 @@ describe Pingback::Client do
     stub_request(:get, @target).to_return(pingback_nowhere)
 
     lambda {
-      @client.send(@source, @target)
+      @client.ping(@source, @target)
     }.should raise_error(Pingback::InvalidTargetException)
   end
 
@@ -60,7 +60,7 @@ describe Pingback::Client do
     stub_request(:head, @target).to_return(pingback_in_header)
     stub_request(:post, @server).to_return(successful_response)
 
-    @client.send(@source, @target)
+    @client.ping(@source, @target)
     a_request(:post, @server).with { |req|
       PrettyXML.write(req.body) == PrettyXML.write(pingback_request_xml)
     }.should have_been_made
@@ -70,7 +70,7 @@ describe Pingback::Client do
     stub_request(:head, @target).to_return(pingback_in_header)
     stub_request(:post, @server).to_return(successful_response)
 
-    @client.send(@source, @target).should ~ /Pingback for.*successful/
+    @client.ping(@source, @target).should ~ /Pingback for.*successful/
   end
 
   it "should raise a corresponding exception if a fault code is received" do
@@ -79,7 +79,7 @@ describe Pingback::Client do
     stub_request(:post, @server).to_return(fault)
 
     lambda {
-      @client.send(@source, @target)
+      @client.ping(@source, @target)
     }.should raise_error(XMLRPC::FaultException)
   end
 

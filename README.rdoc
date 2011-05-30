@@ -27,7 +27,7 @@ Personally I dont think that its a good idea to allow some strangers to request 
   source_uri = "http://myblog.com/articles/2"
   target_uri = "http://someblog.com/articles/16"
 
-  Pingback::Client.send(source_uri, target_uri)
+  Pingback::Client.new.ping(source_uri, target_uri)
 
 == receiving pingback requests
 
