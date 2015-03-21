@@ -18,23 +18,24 @@ module Pingback
     end
 
     def call(env)
-
-        request = Rack::Request.new(env)
-
-        xml_response = @xmlrpc_handler.process(request.body)
-
-        [200, {'Content-Type' => 'text/xml'}, [xml_response]]
+      @request = Rack::Request.new(env)
+      xml_response = @xmlrpc_handler.process(request_body)
+      [200, {'Content-Type' => 'text/xml'}, [xml_response]]
     end
 
     private
     def setup_xmlrpc_handler
       @xmlrpc_handler = XMLRPC::BasicServer.new
       @xmlrpc_handler.add_handler('pingback.ping') do |source_uri, target_uri|
-
         @request_handler.call(source_uri, target_uri)
-
         "Pingback for source #{source_uri} and target #{target_uri} was successful"
       end
+    end
+
+    def request_body
+      @request.body.read
+    ensure
+      @request.body.rewind
     end
   end
 end
