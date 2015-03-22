@@ -29,25 +29,37 @@ module Pingback
     end
 
     private
-    def request_header(uri)
+    def request_header(uri, limit=3)
+      raise InvalidTargetException if limit < 0
       url = URI.parse uri
       req = Net::HTTP::Head.new url.path
-      Net::HTTP.start(url.host, url.port) {|http|
-         http.request req
+      Net::HTTP.start(url.host, url.port, :use_ssl => url.scheme == "https") {|http|
+        http.request(req) do |response|
+          case response
+          when Net::HTTPRedirection then
+            return request_header(response["location"], limit-1)
+          end
+        end
       }
     end
-    
-    def request_all(uri)
+
+    def request_all(uri, limit=3)
+      raise InvalidTargetException if limit < 0
       url = URI.parse uri
       req = Net::HTTP::Get.new url.path
-      Net::HTTP.start(url.host, url.port) {|http|
-         http.request req
+      Net::HTTP.start(url.host, url.port, :use_ssl => url.scheme == "https") {|http|
+        http.request(req) do |response|
+          case response
+          when Net::HTTPRedirection then
+            return request_all(response["location"], limit-1)
+          end
+        end
       }
     end
 
     def send_pingback(server, source_uri, target_uri)
       server_uri = URI.parse server
-      c = XMLRPC::Client.new server_uri.host, server_uri.path, server_uri.port
+      c = XMLRPC::Client.new server_uri.host, server_uri.path, server_uri.port, nil, nil, nil, nil, server_uri.scheme == "https"
       c.call('pingback.ping', source_uri, target_uri)
     end
   end
