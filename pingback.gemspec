@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/AndreasWurm/pingback"
   s.summary     = "This library enables the user to write pingback aware applications."
   s.description = "This library enables the user to write pingback aware applications."
+  s.license     = "GPL-3"
 
   s.required_rubygems_version = ">= 1.3.6"
 
