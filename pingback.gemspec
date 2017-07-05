@@ -15,7 +15,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'nokogiri'
   s.add_dependency 'rack'
-
+  s.add_dependency 'xmlrpc'
+  
   s.add_development_dependency "rake", "10.4.2"
   s.add_development_dependency "bundler", ">= 1.0.0"
   s.add_development_dependency "rspec", ">= 2.5.0"
